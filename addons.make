@@ -1,1 +1,1 @@
-ofxVideoRecorder
+#ofxVideoRecorder
