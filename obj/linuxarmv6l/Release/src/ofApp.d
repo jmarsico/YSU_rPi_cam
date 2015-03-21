@@ -384,7 +384,8 @@ obj/linuxarmv6l/Release/src/ofApp.o: src/ofApp.cpp src/ofApp.h \
  ../../../libs/openFrameworks/3d/ofEasyCam.h \
  ../../../addons/ofxGifEncoder/src/ofxGifEncoder.h \
  ../../../addons/ofxGifEncoder/src/ofxGifFrame.h \
- ../../../addons/ofxGifEncoder/src/ofxGifDitherTypes.h
+ ../../../addons/ofxGifEncoder/src/ofxGifDitherTypes.h \
+ addons/ofxWiringPi/lib/wiringPi/include/wiringPi.h
 
 src/ofApp.h:
 
@@ -1201,3 +1202,5 @@ src/ofApp.h:
 ../../../addons/ofxGifEncoder/src/ofxGifFrame.h:
 
 ../../../addons/ofxGifEncoder/src/ofxGifDitherTypes.h:
+
+addons/ofxWiringPi/lib/wiringPi/include/wiringPi.h:

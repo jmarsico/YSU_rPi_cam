@@ -3,37 +3,35 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    frameCounter = 0;
-    
     ofSetFrameRate(30);
 
     vidGrabber.setDesiredFrameRate(30);
     vidGrabber.initGrabber(640, 480);
+    ofSetWindowShape(vidGrabber.getWidth(), vidGrabber.getHeight() );
 
     gifEncoder.setup(vidGrabber.getWidth(), vidGrabber.getHeight(), .25, 256);
     ofAddListener(ofxGifEncoder::OFX_GIF_SAVE_FINISHED, this, &ofApp::onGifSaved);
     
-//    fileName = "/mnt/storage/rpitest";
-    
-    ofSetWindowShape(vidGrabber.getWidth(), vidGrabber.getHeight()	);
-    
-    bRecording = false;
-
     ofEnableAlphaBlending();
+   
+    wiringPiSetup();
+    buttonPin = 7;
+    pinMode(buttonPin, INPUT);
+    pullUpDnControl(buttonPin, PUD_UP);
+
+    LEDpin = 2;
+    pinMode(LEDpin, OUTPUT);
+    
     timer = 0;
-    
-    
+        
     bGifMode = false;
     bSingleMode = false;
+    bRecording = false;
     
     gifFrameCounter = 0;
+    buttonTimer = 0;
 }
 
-
-//--------------------------------------------------------------
-void ofApp::exit() {
-
-}
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -54,6 +52,9 @@ void ofApp::update(){
            
             //add the image object to the queue
             images.push_back(i);
+            digitalWrite(LEDpin, LOW);
+            ofSleepMillis(100);
+            digitalWrite(LEDpin, HIGH);
 
             //tell us how many images we have
             ofLog() << "CAPTURE, we now have " << images.size() << " images.";
@@ -94,7 +95,9 @@ void ofApp::update(){
            
     }
     if(!bRecording) timer = 0;  
-    ofLog() << "timer: " << timer;  
+    // ofLog() << "timer: " << timer;  
+
+    readButtonState();
 }
 
 
@@ -185,6 +188,9 @@ void ofApp::captureFrametoGif() {
     
     gifEncoder.addFrame(p);
     gifFrameCounter ++;
+    digitalWrite(LEDpin, LOW);
+    ofSleepMillis(100);
+    digitalWrite(LEDpin, HIGH);
     
     if(gifFrameCounter >= 9)
     {
@@ -204,16 +210,19 @@ void ofApp::saveGif(){
     images.clear();
     lightPoints.clear();
     darkPoints.clear();
-    frameCounter = 0;
+    gifFrameCounter = 0;
 
     ofLog() << "gif save started";
     
+
+    //    fileName = "/mnt/storage/rpitest";
 }
 
 
 //--------------------------------------------------------------
 void ofApp::onGifSaved(string &fileName) {
     cout << "gif saved as " << fileName << endl;
+    digitalWrite(LEDpin, LOW);
 }
 
 
@@ -231,7 +240,42 @@ void ofApp::saveOverlay(){
     bSingleMode = false;
 
     ofLog() << "Save Overlay done";
+    digitalWrite(LEDpin, LOW);
     
+
+    //    fileName = "/mnt/storage/rpitest";
+}
+
+
+
+//--------------------------------------------------------------
+void ofApp::readButtonState(){
+    if(digitalRead(buttonPin) == LOW)
+    {
+        buttonTimer++;
+    } else if(digitalRead(buttonPin) == HIGH)
+    {
+        if(buttonTimer > 5  &&  buttonTimer < 30)
+        {
+            ofLog() << "*********************************** SMALL";
+            bRecording = !bRecording;
+            bSingleMode = true;
+            digitalWrite(LEDpin, HIGH);
+        }
+        if(buttonTimer > 30)
+        {
+            ofLog() << "***********************************LONG";
+            bRecording = !bRecording;
+            bGifMode = true;
+            digitalWrite(LEDpin, HIGH);
+        }
+
+        buttonTimer = 0;
+
+    }
+
+    ofLog() << "buttonTimer: " << buttonTimer;
+
 }
 
 //--------------------------------------------------------------
@@ -259,4 +303,10 @@ void ofApp::keyPressed(int key){
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg){
     
+}
+
+
+//--------------------------------------------------------------
+void ofApp::exit() {
+
 }
