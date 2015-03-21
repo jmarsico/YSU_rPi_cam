@@ -16,10 +16,14 @@ You will need to download the following:
 
 
 ##Installation
-
+1. Download and install openframeworks. Follow the setup instructions [here][6]. 
+2. Move into the addons folder within openFrameworks and clone ofxGifEncoder ofxWiringPi
+3. Move into the apps/myApps/YSU_rPi_cam folder.  Make sure there is a copy of ofxWiringPi in the addons folder within YSU_rPi_cam. If the folder is empty, copy ofxWiringPi from the main openFrameworks addons folder to this addons folder
 
 [1]: http://www.raspberrypi.org/
 [2]: http://www.openframeworks.cc/
 [3]: http://www.openframeworks.cc/download/
 [4]: https://github.com/jesusgollonet/ofxGifEncoder
 [5]: https://github.com/jmarsico/ofxWiringPi  
+[6]: http://www.openframeworks.cc/setup/raspberrypi/Raspberry-Pi-Getting-Started.html
+
