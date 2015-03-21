@@ -29,6 +29,8 @@ void ofApp::setup(){
     gifFrameCounter = 0;
 }
 
+
+//--------------------------------------------------------------
 void ofApp::exit() {
 
 }
@@ -43,13 +45,20 @@ void ofApp::update(){
     if(vidGrabber.isFrameNew() && bRecording)
     {
 
+        //every 15 frames of video do this stuff
         if(timer % 15 == 0)
         {
+            //get a new ofImage object from the video
             ofImage i;
             i.setFromPixels(vidGrabber.getPixelsRef());
            
+            //add the image object to the queue
             images.push_back(i);
+
+            //tell us how many images we have
+            ofLog() << "CAPTURE, we now have " << images.size() << " images.";
             
+
             int brightest = 0;
             int darkest = 255;
             
@@ -78,20 +87,14 @@ void ofApp::update(){
                         darkPoints.push_back(darkPoint);
                     }
                 }
-            }
-            
-            ofLog() << "capture, new size: " << images.size();
+            } 
         }
-        
-        
-        
+
+        timer ++;
+           
     }
-    
-    
-   
-    
-    ofLog() << "timer: " << timer;
-    
+    if(!bRecording) timer = 0;  
+    ofLog() << "timer: " << timer;  
 }
 
 
@@ -163,16 +166,12 @@ void ofApp::draw(){
     
     if(bSingleMode)
     {
-        if(images.size() >= 10)
+        if(images.size() >= 9)
         {
             saveOverlay();
         }
     }
     
-    timer ++;
-    if(!bRecording) timer = 0;
-    
-
 }
 
 //--------------------------------------------------------------
@@ -187,7 +186,7 @@ void ofApp::captureFrametoGif() {
     gifEncoder.addFrame(p);
     gifFrameCounter ++;
     
-    if(gifFrameCounter > 9)
+    if(gifFrameCounter >= 9)
     {
         saveGif();
     }
@@ -202,11 +201,12 @@ void ofApp::saveGif(){
     string fileName = ofGetTimestampString("%Y_%n_%d_%H_%M_%S");
     fileName.append(".gif");
     gifEncoder.save(fileName);
-    bRecording = false;
     images.clear();
     lightPoints.clear();
     darkPoints.clear();
     frameCounter = 0;
+
+    ofLog() << "gif save started";
     
 }
 
@@ -229,6 +229,8 @@ void ofApp::saveOverlay(){
     
     bRecording = false;
     bSingleMode = false;
+
+    ofLog() << "Save Overlay done";
     
 }
 
@@ -239,7 +241,6 @@ void ofApp::keyPressed(int key){
         bRecording = !bRecording;
         bSingleMode = true;
         
-
     }
     
     if(key=='g')
@@ -254,42 +255,8 @@ void ofApp::keyPressed(int key){
     }
 }
 
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-    
-}
 
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg){
-    
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){
     
 }

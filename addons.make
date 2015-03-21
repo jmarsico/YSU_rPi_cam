@@ -1,1 +1,2 @@
-#ofxVideoRecorder
+ofxGifEncoder
+ofxWiringPi
